@@ -1,4 +1,4 @@
-{% set version = "3.4.1" %}
+{% set version = "3.7.1" %}
 
 package:
   name: twine
@@ -6,9 +6,10 @@ package:
 
 source:
   url: https://pypi.io/packages/source/t/twine/twine-{{ version }}.tar.gz
-  sha256: a56c985264b991dc8a8f4234eb80c5af87fa8080d0c224ad8f2cd05a2c22e83b
+  sha256: 28460a3db6b4532bde6a5db6755cf2dce6c5020bada8a641bb2c5c7a9b1f35b8
 
 build:
+  noarch: python
   number: 0
   script: {{ PYTHON }} -m pip install . --no-deps -vv
   skip: true  # [py<36]
@@ -19,19 +20,20 @@ requirements:
   host:
     - pip
     - python
-    - setuptools >=0.7.0
-    - setuptools_scm >=1.15
+    - setuptools >=45
+    - setuptools_scm >=6.0
+    - toml
+    - wheel
   run:
     - colorama >=0.4.3
     - importlib_metadata >=3.6
     - keyring >=15.1
-    - pkginfo >=1.4.2
-    - python
+    - pkginfo >=1.8.1
+    - python >=3.6
     - readme_renderer >=21.0
     - requests >=2.20
     - requests-toolbelt >=0.8.0,!=0.9.0
     - rfc3986 >=1.4.0
-    - setuptools >=0.7.0
     - tqdm >=4.14
 
 test:
@@ -51,6 +53,7 @@ about:
   license_family: Apache
   license_file: LICENSE
   summary: Collection of utilities for interacting with PyPI
+  dev_url: https://github.com/pypa/twine
   doc_url: https://twine.readthedocs.io
   doc_source_url: https://github.com/pypa/twine/tree/master/docs
 
