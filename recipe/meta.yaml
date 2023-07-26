@@ -14,7 +14,7 @@ build:
   number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   # depends on readme_renderer not available for linux-s390x
-  skip: true  # [s390x]
+  skip: true
   entry_points:
     - twine = twine.__main__:main
 
