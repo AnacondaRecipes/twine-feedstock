@@ -1,5 +1,5 @@
 {% set name = "twine" %}
-{% set version = "4.0.2" %}
+{% set version = "6.0.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,22 +7,22 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/twine-{{ version }}.tar.gz
-  sha256: 9e102ef5fdd5a20661eb88fad46338806c3bd32cf1db729603fe3697b1bc83c8
+  sha256: 36158b09df5406e1c9c1fb8edb24fc2be387709443e7376689b938531582ee27
 
 build:
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
   number: 0
-  skip: true  # [py<37]
+  skip: true  # [py<38]
   entry_points:
     - twine = twine.__main__:main
 
 requirements:
   host:
     - python
-    - setuptools >=45
-    - wheel
-    - setuptools_scm >=6.0
     - pip
+    - wheel
+    - setuptools >=61.2
+    - setuptools_scm >=6.0
   run:
     - python
     - pkginfo >=1.8.1
@@ -30,18 +30,31 @@ requirements:
     - requests >=2.20
     - requests-toolbelt !=0.9.0,>=0.8.0
     - urllib3 >=1.26.0
-    - importlib-metadata >=3.6
-    - keyring >=15.1
+    - importlib-metadata >=3.6  # [py<310]
+    - keyring >=15.1            # [not s390x]
     - rfc3986 >=1.4.0
     - rich >=12.0.0
+    - packaging
+  run_constrained:
+    - keyring >=15.1            # [s390x]
 
 test:
-  imports:
-    - twine
-  commands:
-    - pip check
   requires:
     - pip
+    - pretend
+    - pytest
+  source_files:
+    - twine
+    - tests
+  imports:
+    - twine
+    - twine.commands
+  commands:
+    - pip check
+    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py  # [not s390x]
+    # Upstream is still figuring out how to handle keyring on s390x.
+    # https://github.com/pypa/twine/issues/1158
+    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py -k "not (keyring or test_values_from_env or test_no_color_exception or test_http_exception_handling or test_exception_handling or test_catches_enoent or test_dispatch_to_subcommand or test_warns_for_empty_password)"  # [s390x]
 
 about:
   home: https://github.com/pypa/twine
