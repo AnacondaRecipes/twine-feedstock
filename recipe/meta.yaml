@@ -1,42 +1,42 @@
 {% set name = "twine" %}
-{% set version = "6.0.1" %}
+{% set version = "6.2.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/twine-{{ version }}.tar.gz
-  sha256: 36158b09df5406e1c9c1fb8edb24fc2be387709443e7376689b938531582ee27
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e5ed0d2fd70c9959770dce51c8f39c8945c574e18173a7b81802dab51b4b75cf
 
 build:
-  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
-  number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<39]
   entry_points:
     - twine = twine.__main__:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
 
 requirements:
   host:
     - python
     - pip
     - wheel
-    - setuptools >=61.2
+    - setuptools >=77.0.3
     - setuptools_scm >=6.0
   run:
     - python
-    - pkginfo >=1.8.1
     - readme_renderer >=35.0
     - requests >=2.20
     - requests-toolbelt !=0.9.0,>=0.8.0
     - urllib3 >=1.26.0
     - importlib-metadata >=3.6  # [py<310]
-    - keyring >=15.1            # [not s390x]
+    - keyring >=21.2.0          # [not s390x]
     - rfc3986 >=1.4.0
     - rich >=12.0.0
-    - packaging
+    - packaging >=24.0
+    - id
   run_constrained:
-    - keyring >=15.1            # [s390x]
+    - keyring >=21.2.0          # [s390x]
 
 test:
   requires:
