@@ -20,14 +20,14 @@ requirements:
   host:
     - python
     - pip
-    - wheel
     - setuptools >=77.0.3
     - setuptools_scm >=6.0
+    - toml
   run:
     - python
     - readme_renderer >=35.0
     - requests >=2.20
-    - requests-toolbelt !=0.9.0,>=0.8.0
+    - requests-toolbelt >=0.8.0,!=0.9.0
     - urllib3 >=1.26.0
     - importlib-metadata >=3.6  # [py<310]
     - keyring >=21.2.0
@@ -49,6 +49,7 @@ test:
     - twine.commands
   commands:
     - pip check
+    - twine --help
     # Ignore integration tests:
     #  def pypiserver_instance(request, port_getter, watcher_getter, tmp_path_factory):
     #E fixture 'port_getter' not found
