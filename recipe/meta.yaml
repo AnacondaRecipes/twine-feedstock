@@ -1,42 +1,40 @@
 {% set name = "twine" %}
-{% set version = "6.0.1" %}
+{% set version = "6.2.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/twine-{{ version }}.tar.gz
-  sha256: 36158b09df5406e1c9c1fb8edb24fc2be387709443e7376689b938531582ee27
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e5ed0d2fd70c9959770dce51c8f39c8945c574e18173a7b81802dab51b4b75cf
 
 build:
-  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
-  number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<39]
   entry_points:
     - twine = twine.__main__:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
 
 requirements:
   host:
     - python
     - pip
-    - wheel
-    - setuptools >=61.2
+    - setuptools >=77.0.3
     - setuptools_scm >=6.0
+    - toml
   run:
     - python
-    - pkginfo >=1.8.1
     - readme_renderer >=35.0
     - requests >=2.20
-    - requests-toolbelt !=0.9.0,>=0.8.0
+    - requests-toolbelt >=0.8.0,!=0.9.0
     - urllib3 >=1.26.0
     - importlib-metadata >=3.6  # [py<310]
-    - keyring >=15.1            # [not s390x]
+    - keyring >=21.2.0
     - rfc3986 >=1.4.0
     - rich >=12.0.0
-    - packaging
-  run_constrained:
-    - keyring >=15.1            # [s390x]
+    - packaging >=24.0
+    - id
 
 test:
   requires:
@@ -51,10 +49,13 @@ test:
     - twine.commands
   commands:
     - pip check
-    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py  # [not s390x]
-    # Upstream is still figuring out how to handle keyring on s390x.
-    # https://github.com/pypa/twine/issues/1158
-    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py -k "not (keyring or test_values_from_env or test_no_color_exception or test_http_exception_handling or test_exception_handling or test_catches_enoent or test_dispatch_to_subcommand or test_warns_for_empty_password)"  # [s390x]
+    - twine --help
+    # Ignore integration tests:
+    #  def pypiserver_instance(request, port_getter, watcher_getter, tmp_path_factory):
+    #E fixture 'port_getter' not found
+    # Ignore test_check.py:
+    # E  AssertionError: assert [('twine.comm...transition.')] == [('twine.comm...transition.')]
+    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py  
 
 about:
   home: https://github.com/pypa/twine
