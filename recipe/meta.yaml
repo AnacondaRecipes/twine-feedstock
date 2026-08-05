@@ -2,7 +2,7 @@
 {% set version = "7.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -23,31 +23,31 @@ requirements:
     - setuptools >=77.0.3
     - setuptools_scm >=6.0
     - toml
-    - setuptools-scm >=6.0
   run:
     - python
     - readme_renderer >=35.0
     - requests >=2.20
     - requests-toolbelt >=0.8.0,!=0.9.0
     - urllib3 >=1.26.0
-    - importlib-metadata >=3.6  # [py<310]
     - keyring >=21.2.0
     - rfc3986 >=1.4.0
     - rich >=14.3.3
     - packaging >=26.1
     - id
+  run_constrained:
+    - keyring >=21.2.0
 
 test:
-  requires:
-    - pip
-    - pretend
-    - pytest
   source_files:
     - twine
     - tests
   imports:
     - twine
     - twine.commands
+  requires:
+    - pip
+    - pretend
+    - pytest
   commands:
     - pip check
     - twine --help
@@ -56,7 +56,7 @@ test:
     #E fixture 'port_getter' not found
     # Ignore test_check.py:
     # E  AssertionError: assert [('twine.comm...transition.')] == [('twine.comm...transition.')]
-    - pytest -v tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py
+    - pytest -vv tests --ignore-glob '*integration*.py' --ignore=tests/test_check.py
 
 about:
   home: https://github.com/pypa/twine
