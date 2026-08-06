@@ -34,8 +34,6 @@ requirements:
     - rich >=14.3.3
     - packaging >=26.1
     - id
-  run_constrained:
-    - keyring >=21.2.0
 
 test:
   source_files:
